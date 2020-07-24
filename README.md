@@ -34,6 +34,13 @@ Finally, you need to install the bootstrap package and the related frontend depe
 npm install && npm run dev
 ```
 
+### Listando todas as rotas do projeto
+
+```bash
+php artisan route:list
+```
+
+
 
 ### Update npm
 

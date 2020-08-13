@@ -38,7 +38,7 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        echo '<h1>Cadastro de um artigo </h1>';
     }
 
     /**

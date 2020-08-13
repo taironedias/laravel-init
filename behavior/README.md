@@ -1,79 +1,282 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+<p align="center"><img src="/.resources/g3807.png" width="400"></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## This project
 
-## About Laravel
+- php:7.2-fpm
+- nginx:alpine
+- mysql:5.7.22
+- composer:1.10.10
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Step 1 — Downloading Laravel and Installing Dependencies
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```bash
+cd ~
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+git clone https://github.com/laravel/laravel.git NAME_YOUR_PROJECT
 
-## Learning Laravel
+cd ~/NAME_YOUR_PROJECT
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+docker run --rm -v $(pwd):/app composer install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+sudo chown -R $USER:$USER ~/NAME_YOUR_PROJECT
+```
 
-## Laravel Sponsors
+> Note: All files and directories created in the next steps are inside the NAME_YOUR_PROJECT folder
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Step 2 — Creating the Docker Compose File and Persisting Data
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
+```bash
+# create docker-compose.yml file
+touch docker-compose.yml
+```
+Inside the `docker-compose.yml` add the following configuration:
 
-## Contributing
+```yaml
+version: '3'
+services:
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
 
-## Code of Conduct
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#Docker Networks
+networks:
+  app-network:
 
-## Security Vulnerabilities
+#Volumes
+volumes:
+  dbdata:
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Step 3 — Creating the Dockerfile
+```bash
+# create Dockerfile file
+touch Dockerfile
+```
+Inside the `Dockerfile` add the following configuration:
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```Dockerfile
+FROM php:7.4-fpm
+
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /var/www/
+
+# Set working directory
+WORKDIR /var/www
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    libzip-dev \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install extensions
+RUN docker-php-ext-install pdo_mysql zip exif pcntl
+RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/
+RUN docker-php-ext-install gd
+
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Add user for laravel application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
+
+# Copy existing application directory contents
+COPY . /var/www
+
+# Copy existing application directory permissions
+COPY --chown=www:www . /var/www
+
+# Change current user to www
+USER www
+
+# Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
+```
+
+## Step 4 — Configuring PHP
+
+```bash
+# create the php directory
+mkdir php
+
+# next, create the local.ini file
+touch php/local.ini
+```
+To demonstrate how to configure PHP, add inside `local.ini` the following code to set size limitations for uploaded files:
+```ini
+upload_max_filesize=40M
+post_max_size=40M
+```
+
+## Step 5 — Configuring Nginx
+```bash
+# create the nginx and conf.d directory
+mkdir -p nginx/conf.d
+
+# next, create the app.conf file
+touch nginx/conf.d/app.conf
+```
+Add the following code to the file to specify your Nginx configuration:
+```conf
+server {
+    listen 80;
+    index index.php index.html;
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/public;
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+        gzip_static on;
+    }
+}
+```
+
+## Step 6 — Configuring MySQL
+
+```bash
+# create the mysql directory
+mkdir mysql
+
+# next, create the my.cnf file
+touch mysql/my.cnf
+```
+In the file, add the following code to enable the query log and set the log file location:
+```cnf
+[mysqld]
+general_log = 1
+general_log_file = /var/lib/mysql/general.log
+```
+
+## Step 7 — Modifying Environment Settings and Running the Containers
+
+```bash
+cp .env.example .env
+```
+
+Open the `.env` file using vscode and find the block that specifies `DB_CONNECTION` and update it to reflect the specifics of your setup.
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=larauser
+DB_PASSWORD=YOUR_DB_PASSWORD_DEFINIED_DOCKER_COMPOSE
+```
+
+Save all your changes and build the `docker-compose.yml`
+
+```bash
+docker-compose up -d --build
+```
+
+Once the process is complete, use the following command to list all of the running containers:
+```bash
+docker ps
+```
+The following command will generate a key and copy it to your .env file, ensuring that your user sessions and encrypted data remain secure:
+```bash
+docker-compose exec app php artisan key:generate
+```
+
+You now have the environment settings required to run your application. To cache these settings into a file, which will boost your application’s load speed, run:
+
+```bash
+docker-compose exec app php artisan config:cache
+```
+
+## Step 8 — Add Bootstrap in Laravel Project
+Initially, download the dependencies for the project:
+```bash
+docker-compose exec app composer require laravel/ui
+
+# so, installed bootstrap scaffolding
+docker-compose exec app php artisan ui bootstrap
+
+# and running
+docker-compose exec app php artisan ui bootstrap --auth
+```
+So, execute the instructions in javascript to be added to the project:
+```bash
+# download the dependencies
+docker run --rm -v $(pwd):/app -w /app node npm install
+
+# run the dependencies
+docker run --rm -v $(pwd):/app -w /app node npm run dev
+
+```
+
+Check your browser `http://localhost:80`... :smile:

@@ -58,7 +58,7 @@ Route::get('/', function () {
  * 
  *          Route::patch('URI', 'Controller@method');
  * 
- * > MATCH: Disponível no Laravel para agrupar rotas que possem o mesmo URI e compartilham o mesmo controller
+    * MATCH: Disponível no Laravel para agrupar rotas que possem o mesmo URI e compartilham o mesmo controller
  *
  *          Route::match(['method_1', 'method_2'...], 'URI', 'Controller@method');
  * 
@@ -67,7 +67,7 @@ Route::get('/', function () {
  * 
  *          Route::match('URI', 'Controller@method');
  * 
- * > ANY:   Disponível no Laravel para aceitar qualqer verbalização
+    * ANY:   Disponível no Laravel para aceitar qualqer verbalização
  *
  *          Route::any('URI', 'Controller@method');
  * 

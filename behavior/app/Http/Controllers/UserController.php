@@ -12,22 +12,46 @@ class UserController extends Controller {
 
     public function getData(Request $request) {
         echo '<h1>Disparou a action de GET</h1>';
-        var_dump($request);
+        echo json_encode(
+            [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email
+            ]
+        );
     }
 
     public function postData(Request $request) {
         echo '<h1>Disparou a action de POST</h1>';
-        var_dump($request);
+        echo json_encode(
+            [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email
+            ]
+        );
     }
 
     public function putData(Request $request) {
         echo '<h1>Disparou a action de PUT</h1>';
-        var_dump($request);
+        echo json_encode(
+            [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email
+            ]
+        );
     }
 
     public function patchData(Request $request) {
         echo '<h1>Disparou a action de PATCH</h1>';
-        var_dump($request);
+        echo json_encode(
+            [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email
+            ]
+        );
     }
 
     public function matchData(Request $request) {

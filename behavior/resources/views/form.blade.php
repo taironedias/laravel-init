@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário :: Mod Rotas</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <title>Form :: Teste de Rotas</title>
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div class="container my-5">
         <form action="{{ url('/users/1') }}" method="POST" autocomplete="off">
 
-            @method('DELETE')
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <!-- Tem helper do blade (facilitador) -->
+            @method('DELETE')
+            <!-- Tem a forma completa -->
+            <!-- <input type="hidden" name="_method" value="DELETE"> -->
 
             <div class="form-group">
                 <label for="first_name">Primeiro Nome</label>
@@ -32,7 +43,5 @@
 
         </form>
     </div>
-
-    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

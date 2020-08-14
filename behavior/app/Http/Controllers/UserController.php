@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller {
 
@@ -79,5 +80,13 @@ class UserController extends Controller {
         echo "Controller:: User   Método:: userComment<br/>";
         var_dump($id);
         var_dump($comment);
+    }
+
+    public function inspect() {
+        $route = Route::current();
+        $name = Route::currentRouteName();
+        $action = Route::currentRouteAction();
+
+        var_dump($name, $action, $route);
     }
 }

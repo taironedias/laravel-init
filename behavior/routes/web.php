@@ -269,3 +269,14 @@ Route::get('/users/{id}/comments/{comment?}', 'UserController@userComment')->whe
         'comment' => '[0-9]+'
     ]
 );
+
+
+
+
+
+/** =============================================== */
+/**
+ * INSPECIONAMENTO: Identificar qual a rota está, qual o nome dela e sua ação, ou seja, qual o controlador que está gerenciando-a;
+ *
+ */
+Route::get('/users/2', 'UserController@inspect')->name('inspect');

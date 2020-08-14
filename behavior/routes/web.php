@@ -30,7 +30,7 @@ Route::get('/', function () {
 
 // Route::get('/home', 'HomeController@index')->name('home');
 
-Route::view('/form', 'form');
+// Route::view('/form', 'form');
 
 /**
  * Definição de Rota
@@ -263,12 +263,12 @@ Route::view('/form', 'form');
 /**
  * (v)
  */
-Route::get('/users/{id}/comments/{comment?}', 'UserController@userComment')->where(
-    [
-        'id' => '[0-9]+',
-        'comment' => '[0-9]+'
-    ]
-);
+// Route::get('/users/{id}/comments/{comment?}', 'UserController@userComment')->where(
+//     [
+//         'id' => '[0-9]+',
+//         'comment' => '[0-9]+'
+//     ]
+// );
 
 
 
@@ -276,7 +276,80 @@ Route::get('/users/{id}/comments/{comment?}', 'UserController@userComment')->whe
 
 /** =============================================== */
 /**
- * INSPECIONAMENTO: Identificar qual a rota está, qual o nome dela e sua ação, ou seja, qual o controlador que está gerenciando-a;
+ * INSPECIONAMENTO: Permite que você resgate qual é a rota atual, o nome definido para a rota e a ação.
+ * A ação não pode ser uma closure, pois caso seja o retorno do método será null.
  *
  */
-Route::get('/users/2', 'UserController@inspect')->name('inspect');
+// Route::get('/users/2', 'UserController@inspect')->name('inspect');
+
+
+
+
+
+
+
+/** =============================================== */
+/**
+ * AGRUPAMENTO
+ * 
+ * (i) Prefix: O método prefix pode ser usado para prefixar cada rota no grupo com um determinado URI. Por exemplo, você pode prefixar todos os URIs de rota dentro do grupo com admin.
+ * 
+ * 
+ * (ii) Name: O método name pode ser usado para prefixar cada nome de rota no grupo com uma determinada string. Por exemplo, você pode querer prefixar todos os nomes de rotas agrupadas com admin. A string fornecida é prefixada ao nome da rota com o caracter . no final
+ *
+ * 
+ * (iii) Middleware: Para atribuir middleware a todas as rotas dentro de um grupo, você pode usar o método middleware antes de definir o grupo. Middleware são executados na ordem em que estão listados na matriz:
+    * O throttle é um middleware nativo do Laravel que aplica um limite de requisições por tempo, utilizando a session. Assim, o primeiro parâmetro significa a quantidade de requisições o segundo o tempo dado em minutos. No exemplo realizado, foi específicado 10 requisições / 1 minuto
+ * 
+ * 
+ * (iv) Namespaces: Outro caso de uso comum para grupos de rota é atribuir o mesmo namespace PHP a um grupo de controladores usando o método namespace
+ * 
+ * 
+ * 
+ * (v) Group: Agrupa todas os casos listados acima.
+ * 
+ */
+
+/**
+ * (i)
+ */
+//  Route::prefix('admin')->group(function() {
+    //  Route::view('/form', 'form');
+//  });
+
+/**
+ * (ii)
+ */
+//  Route::name('admin.posts.')->group(function() {
+//     Route::get('/admin/posts/index', 'PostController@index')->name('index');
+//     Route::get('/admin/posts', 'PostController@show')->name('show');
+//  });
+
+ /**
+  * (iii)
+  */
+//  Route::middleware(['throttle:10,1'])->group(function() {
+    //  Route::view('/form', 'form');
+//  });
+
+ /**
+  * (iv)
+  */
+// Route::namespace('Admin')->group(function() {
+//     Route::get('/users', 'UserController@index');
+// });
+
+/**
+ * (v)
+ */
+Route::group(
+    [
+        'namespace' => 'Admin',
+        'prefix' => 'admin',
+        'middleware' => ['throttle:10,1'],
+        'as' => 'admin.'
+    ],
+    function() {
+        Route::resource('users', 'UserController');
+    }
+);

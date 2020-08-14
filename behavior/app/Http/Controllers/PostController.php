@@ -19,6 +19,15 @@ class PostController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
+    public function indexRedirect() {
+        return redirect()->route('posts.index');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function indexSobrescrito() {
         echo '<h1>Listagem do todos os artigos da action indexSobrescrito </h1>';
     }

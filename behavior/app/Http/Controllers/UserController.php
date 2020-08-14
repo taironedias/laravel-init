@@ -70,4 +70,8 @@ class UserController extends Controller {
     public function any() {
         return '<h1>Qualquer verbalização é aceita</h1>';
     }
+
+    public function pageNotFound() {
+        echo "<h1>Ooops! Tava ruim, não tava bom, agora parece que piorou! xD</h1>";
+    }
 }

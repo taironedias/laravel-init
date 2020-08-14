@@ -179,27 +179,93 @@ Route::view('/form', 'form');
  /**
   * (i)
   */
- Route::get('/users', function() {
-     echo "<h2>Listagem dos usuários utilizando Closure!</h2>";
- });
+//  Route::get('/users', function() {
+//      echo "<h2>Listagem dos usuários utilizando Closure!</h2>";
+//  });
 
 /**
  * (ii)
  */
-Route::view('/formulario', 'form');
+// Route::view('/formulario', 'form');
 
 /**
  * (iii)
  */
-Route::fallback('UserController@pageNotFound');
+// Route::fallback('UserController@pageNotFound');
 
 /**
  * (iv)
  */
-Route::redirect('/users/add', url('/form'), 301);
+// Route::redirect('/users/add', url('/form'), 301);
 
 /**
  * (v)
  */
-Route::get('/posts', 'PostController@index')->name('posts.index');
-Route::get('/posts/redir', 'PostController@indexRedirect')->name('posts.indexRedirect');
+// Route::get('/posts', 'PostController@index')->name('posts.index');
+// Route::get('/posts/redir', 'PostController@indexRedirect')->name('posts.indexRedirect');
+
+
+
+
+/** =============================================== */
+/**
+ * TRATAMENTO DE PARÂMETROS
+ * 
+ * (i) Passando parâmetros (todos obrigatórios) e recuperando no Closure: para declarar como parâmetro deve-se colocar entre as chaves
+ * 
+ * (ii) Passando parâmetros (obrigatório/opcional) e recuperando no Closure: para declarar como opcional deve-se adicionar a interrogação ao final do nome do parâmetro
+ * 
+ * (iii) Tratando com regex um único parâmetro: adicionar o where no final da função get()
+ * 
+ * (iv) Tratando com regex vários parâmetros: adicionar dentro do where um array com key-value para cada parâmetro
+ * 
+ * (v) Passando parâmetros para o método no controlador
+ * 
+ */
+
+/**
+ * (i)
+ */
+// Route::get('/users/{id}/comments/{comment}', function($id, $comment) {
+//     var_dump($id);
+//     var_dump($comment);
+// });
+
+/**
+ * (ii)
+ */
+// Route::get('/users/{id}/comments/{comment?}', function($id, $comment = null) {
+//     var_dump($id);
+//     var_dump($comment);
+// });
+
+/**
+ * (iii)
+ */
+// Route::get('/users/{id}/comments/{comment?}', function($id, $comment = null) {
+//     var_dump($id);
+//     var_dump($comment);
+// })->where('id', '[0-9]+');
+
+/**
+ * (iv)
+ */
+// Route::get('/users/{id}/comments/{comment?}', function($id, $comment = null) {
+//     var_dump($id);
+//     var_dump($comment);
+// })->where(
+//     [
+//         'id' => '[0-9]+',
+//         'comment' => '[0-9]+'
+//     ]
+// );
+
+/**
+ * (v)
+ */
+Route::get('/users/{id}/comments/{comment?}', 'UserController@userComment')->where(
+    [
+        'id' => '[0-9]+',
+        'comment' => '[0-9]+'
+    ]
+);

@@ -74,4 +74,10 @@ class UserController extends Controller {
     public function pageNotFound() {
         echo "<h1>Ooops! Tava ruim, não tava bom, agora parece que piorou! xD</h1>";
     }
+
+    public function userComment($id, $comment = null) {
+        echo "Controller:: User   Método:: userComment<br/>";
+        var_dump($id);
+        var_dump($comment);
+    }
 }

@@ -1,4 +1,4 @@
-<p align="center"><img src="/.resources/g3807.png" width="400"></p>
+<p align="center"><img src="/.images/g3807.png" width="400"></p>
 
 ## This project
 

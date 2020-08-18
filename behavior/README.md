@@ -266,7 +266,7 @@ docker-compose exec app composer require laravel/ui
 # so, installed bootstrap scaffolding
 docker-compose exec app php artisan ui bootstrap
 
-# and running
+# not necessary, but running
 docker-compose exec app php artisan ui bootstrap --auth
 ```
 So, execute the instructions in javascript to be added to the project:
@@ -280,3 +280,49 @@ docker run --rm -v $(pwd):/app -w /app node npm run dev
 ```
 
 Check your browser `http://localhost:80`... :smile:
+
+
+## Step 9 - Creating a User for MySQL
+
+The default MySQL installation only creates the root administrative account, which has unlimited privileges on the database server. In general, it’s better to avoid using the root administrative account when interacting with the database. Instead, let’s create a dedicated database user for our application’s Laravel database.
+
+To create a new user, execute an interactive bash shell on the `db` container with `docker-compose exec`:
+
+```bash
+docker-compose exec db bash
+```
+
+Inside the container, log into the MySQL root administrative account:
+
+```bash
+mysql -u root -p
+```
+
+You will be prompted for the password you set for the MySQL root account during installation in your `docker-compose` file.
+
+Start by creating the database for your Laravel project:
+
+```bash
+CREATE DATABASE YOUR_DATABASE_NAME;
+```
+
+Next, create the user account that will be allowed to access this database. Our username will be **laraveluser**, though you can replace this with another name if you’d prefer. Just be sure that your username and password here match the details you set in your `.env` file in the previous step:
+
+```bash
+GRANT ALL ON YOUR_DATABASE_NAME.* TO 'laraveluser'@'%' IDENTIFIED BY 'YOUR_LARAVEL_DB_PASSWORD_DEFINED_ENV';
+```
+Flush the privileges to notify the MySQL server of the changes:
+
+```bash
+FLUSH PRIVILEGES;
+```
+Exit MySQL:
+```bash
+EXIT;
+```
+Finally, exit the container:
+
+```bash
+exit
+```
+You have configured the user account for your Laravel application database and are ready to migrate your data and work with the Tinker console.

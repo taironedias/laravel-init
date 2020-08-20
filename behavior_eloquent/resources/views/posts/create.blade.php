@@ -12,7 +12,7 @@
 <body>
 
 <div class="container my-5">
-    <form action="" method="post" autocomplete="off">
+    <form action="{{ route('posts.store') }}" method="post" autocomplete="off">
 
         @csrf
 
@@ -28,7 +28,7 @@
 
         <div class="form-group">
             <label for="description">Descrição:</label>
-            <input type="text" class="form-control" id="description" name="description">
+            <textarea class="form-control" name="description" id="description" cols="30" rows="10"></textarea>
         </div>
 
         <button class="btn btn-primary">Enviar!</button>

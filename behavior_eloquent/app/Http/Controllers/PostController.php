@@ -93,7 +93,7 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -103,7 +103,56 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        /** Method (i) 
+         * Utilizando o modelo de inserção Object -> Prop -> Save 
+         */
+        // $post = new Post;
+        // $post->title = $request->title;
+        // $post->subtitle = $request->subtitle;
+        // $post->description = $request->description;
+        // $post->save();
+
+        /** Method (ii)
+         * Deve passar os campos que foram permitidos no model, na variável $fillable
+         */
+        // Post::create(
+        //     [
+        //         'title' => $request->title,
+        //         'subtitle' => $request->subtitle,
+        //         'description' => $request->description
+        //     ]
+        // );
+
+        /** Method (iii)
+         * Esse método de inserção, realiza uma busca com base nos valores passados no primeiro parâmetro, caso encontre o registro ele atualza conforme os valores passados no segundo parâmetro, caso não encontre o registro no banco ele cria!
+         * O primeiro parâmetro é um array que funciona como se fosse um WHERE, ou seja, no exemplo abaixo, ele buscará no banco o registro que possui o title igual a "formiga"; é permitido passar mais de uma "condição" também.
+         * O segundo parâmetro é os dados a serem persistidos caso encontre ou não o registro.
+         * Obs.: para persistir de fato os dados, deve-se utilizar o save() no final da definição.
+         * DICA: caso, fique complicado o entendimento, execute duas vezes e analise os dados no banco em cada execução
+         */
+        // $post = Post::firstOrNew(
+        //     [
+        //         'title' => 'formiga'
+        //     ],
+        //     [
+        //         'subtitle' => $request->subtitle.' (qualquer subtitle a mais)',
+        //         'description' => $request->description.'(qualque description a mais)'
+        //     ]
+        // );
+        // $post->save();
+
+        /** Method (iv)
+         * Esse método é semelhante ao de cima, porém ele não atualiza o registro caso já exista, ou seja, é somente para novo registro e também ele dispensa o uso do save() no final.
+         */
+        Post::firstOrCreate(
+            [
+                'title' => 'foca'
+            ],
+            [
+                'subtitle' => $request->subtitle.'2',
+                'description' => $request->description.'(se executar conforme a condição não irá criar um novo registro e sim atualizar)'
+            ]
+        );
     }
 
     /**

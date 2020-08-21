@@ -221,6 +221,15 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Post $post) {
-        //
+        /** Method (i) */
+        // $post->delete();
+
+        /** Method (ii) (recomendado) */
+        Post::destroy($post->id);
+
+        /** Method (iii) (exclusão em massa) */
+        // Post::where('id', '>', $post->id)->delete();
+
+        return redirect()->route('posts.index');
     }
 }

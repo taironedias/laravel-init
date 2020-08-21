@@ -22,7 +22,13 @@
                     <p>{{ $post->description }}</p>
                     <small>Criado em: {{ date('d/m/Y H:i', strtotime($post->created_at)) }} - Editado em: {{ date('d/m/Y H:i', strtotime($post->updated_at)) }}</small>
                     <small>id: {{ $post->id }}</small>
+                    <form action="{{ route('posts.destroy', [$post->id]) }}" method="post" class="mt-3">
+                        @csrf
+                        @method('DELETE')
                     <p><a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Editar</a></p>
+                        <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Editar</a>
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
                 </article>
             <?php endforeach; ?>
             <hr>

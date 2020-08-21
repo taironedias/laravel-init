@@ -21,6 +21,8 @@
                     <h2>{{ $post->subtitle }}</h2>
                     <p>{{ $post->description }}</p>
                     <small>Criado em: {{ date('d/m/Y H:i', strtotime($post->created_at)) }} - Editado em: {{ date('d/m/Y H:i', strtotime($post->updated_at)) }}</small>
+                    <small>id: {{ $post->id }}</small>
+                    <p><a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Editar</a></p>
                 </article>
             <?php endforeach; ?>
             <hr>

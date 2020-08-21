@@ -103,14 +103,14 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        /** Method (i) 
+        /** Method (i) (recomendado)
          * Utilizando o modelo de inserção Object -> Prop -> Save 
          */
-        // $post = new Post;
-        // $post->title = $request->title;
-        // $post->subtitle = $request->subtitle;
-        // $post->description = $request->description;
-        // $post->save();
+        $post = new Post;
+        $post->title = $request->title;
+        $post->subtitle = $request->subtitle;
+        $post->description = $request->description;
+        $post->save();
 
         /** Method (ii)
          * Deve passar os campos que foram permitidos no model, na variável $fillable
@@ -144,15 +144,17 @@ class PostController extends Controller {
         /** Method (iv)
          * Esse método é semelhante ao de cima, porém ele não atualiza o registro caso já exista, ou seja, é somente para novo registro e também ele dispensa o uso do save() no final.
          */
-        Post::firstOrCreate(
-            [
-                'title' => 'foca'
-            ],
-            [
-                'subtitle' => $request->subtitle.'2',
-                'description' => $request->description.'(se executar conforme a condição não irá criar um novo registro e sim atualizar)'
-            ]
-        );
+        // Post::firstOrCreate(
+        //     [
+        //         'title' => 'foca'
+        //     ],
+        //     [
+        //         'subtitle' => $request->subtitle.'2',
+        //         'description' => $request->description.'(se executar conforme a condição não irá criar um novo registro e sim atualizar)'
+        //     ]
+        // );
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -172,7 +174,7 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit(Post $post) {
-        //
+        return view('posts.update', ['post' => $post]);
     }
 
     /**
@@ -183,7 +185,33 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Post $post) {
-        //
+
+        /** Method (i) (recomendado) */
+        $post->title = $request->title;
+        $post->subtitle = $request->subtitle;
+        $post->description = $request->description;
+        $post->save();
+
+        /** Method (ii)
+         * Esse método é semelhante ao firstOrNew de inserção de dados
+         */
+        // Post::updateOrCreate(
+        //     [
+        //         'id' => $post->id
+        //     ],
+        //     [
+        //         'title' => $request->title,
+        //         'subtitle' => $request->subtitle,
+        //         'description' => $request->description
+        //     ]
+        // );
+
+        /** Method (iii)
+         * Caso deseje realizar uma atualização em massa, ou seja, para vários registros de uma vez. No exemplo abaixo, vou atualizar apenas a descrição de todos os registros cuja data é superior a hoje (20/08/2020)
+         */
+        // Post::where('created_at', '>=', date('Y-m-d H:i:s'))->update(['description' => $request->description]);
+
+        return redirect()->route('posts.index');
     }
 
     /**

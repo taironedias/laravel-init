@@ -25,7 +25,7 @@
                     <form action="{{ route('posts.destroy', [$post->id]) }}" method="post" class="mt-3">
                         @csrf
                         @method('DELETE')
-                    <p><a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Editar</a></p>
+                        <a href="{{ route('posts.show', ['post' => $post->id]) }}" class="btn btn-secondary">Ver</a>
                         <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-primary">Editar</a>
                         <button type="submit" class="btn btn-danger">Excluir</button>
                     </form>

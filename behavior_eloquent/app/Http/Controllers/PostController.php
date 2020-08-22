@@ -70,7 +70,10 @@ class PostController extends Controller {
 
 
         /** o all retorna todos os dados sem necessidade de informar uma condição */
-        $posts = Post::all();
+        // $posts = Post::all();
+
+        /** retorna todos os dados incluindo os que estão em softDelete */
+        $posts = Post::withTrashed()->get();
 
         /** o get retorna todos os dados conforme a condição
          * o take é semelhante ao limit do SQL
@@ -232,4 +235,28 @@ class PostController extends Controller {
 
         return redirect()->route('posts.index');
     }
+
+    public function trashed() {
+        $posts = Post::onlyTrashed()->get();
+
+        return view('posts.trashed', ['posts' => $posts]);
+    }
+
+    /** Como a função abaixo não ao modo nativo do resource, então ao passar o type Post como argumento, ele não acaba realizando o bind automaticamente. Ou seja, no caso abaixo, $post acaba sendo a string id passado na url em vez do objeto Post como acontece nos controllers edit, destroy e show */
+    public function restore($post) {
+        $post = Post::onlyTrashed()->where(['id' => $post])->first();
+
+        if ($post->trashed()) {
+            $post->restore();
+        }
+
+        return redirect()->route('posts.trashed');
+    }
+
+    public function forceDelete($post) {
+        Post::onlyTrashed()->where(['id' => $post])->forceDelete();
+
+        return redirect()->route('posts.trashed');
+    }
+
 }

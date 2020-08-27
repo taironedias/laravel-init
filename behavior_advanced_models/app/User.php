@@ -36,4 +36,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Método que contém um relacionamento de 1-1
+     * Nesse caso, o id do usuário está como foreignKey da tabela Address
+     */
+    public function addressDelivery() {
+        return $this->hasOne(Address::class, 'user', 'id');
+    }
 }

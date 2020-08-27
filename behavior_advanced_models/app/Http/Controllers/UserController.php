@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Address;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -59,8 +60,71 @@ class UserController extends Controller
             echo "Complemento: {$userAddress->complement}<br>";
             echo "Cidade: {$userAddress->city} - {$userAddress->state}<br>";
             echo "CEP: {$userAddress->zipcode}<br>";
-            
         }
+
+        /* (i) salvando informações que contém um relacionamento */
+        // $address0 = new Address([
+        //     'address' => 'Rua A',
+        //     'number' => '200',
+        //     'complement' => 'Casa',
+        //     'zipcode' => '12345-000',
+        //     'city' => 'Cruz',
+        //     'state' => 'BA'
+        // ]);
+
+        // $user->addressDelivery()->save($address0);
+
+        /* (ii) */
+        // $address1 = new Address();
+        // $address1->address = 'Rua B';
+        // $address1->number = '201';
+        // $address1->complement = 'Apto';
+        // $address1->zipcode = '12345-001';
+        // $address1->city = 'Cruz das Almas';
+        // $address1->state = 'Bahia';
+
+        // $user->addressDelivery()->save($address1);
+        
+         /* (iii) utilizando para salvamento múltiplo */
+        // $user->addressDelivery()->saveMany([$address0, $address1]);
+
+        /* (iv) essa é uma outra forma, porém deve-se ficar atento pois se tiver alguma campo possuir um tratamento no Model (por exemplo, o cep é removido o hífen) essa forma não atenderá, pois não é passado pelo modelo uma vez que ele salva direto no banco */
+        // $user->addressDelivery()->create(
+        //     [
+        //         'address' => 'Rua A (utilizando create)',
+        //         'number' => '200',
+        //         'complement' => 'Casa',
+        //         'zipcode' => '12345-000',
+        //         'city' => 'Cruz',
+        //         'state' => 'BA'
+        //     ]
+        // );
+
+        /* Semelhante ao método create, porém para salvar múltiplos registros */
+        // $user->addressDelivery()->createMany(
+        //     [
+        //         [
+        //             'address' => 'Rua C (utilizando createMany)',
+        //             'number' => '200',
+        //             'complement' => 'Casa',
+        //             'zipcode' => '12345-000',
+        //             'city' => 'Cruz',
+        //             'state' => 'BA'
+        //         ],
+        //         [
+        //             'address' => 'Rua D (utilizando createMany)',
+        //             'number' => '200',
+        //             'complement' => 'Casa',
+        //             'zipcode' => '12345-000',
+        //             'city' => 'Cruz',
+        //             'state' => 'BA'
+        //         ]
+        //     ]
+        // );
+
+        /* Utilizando o with, ele recupera os relacionamento junto com o modelo. Ou seja, nesse caso a variável users possui tanto os registros do usuário quanto do endereço. Não é muito recomendado essa prática a não ser se for utilizado em uma single page. Pois, esse forma demanda de recursos para acesso e consulta ao banco */
+        $users = User::with('addressDelivery')->get();
+        dd($users);
     }
 
     /**

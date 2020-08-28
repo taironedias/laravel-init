@@ -129,7 +129,7 @@ class UserController extends Controller
 
 
         /* RELACIONAMENTO 1-N */
-        $posts = $user->posts()->orderBy('id', 'DESC')->take(2)->get();
+        $posts = $user->posts()->orderBy('id', 'DESC')->get();
 
         if (!empty($posts)) {
             echo "<h1>Artigos</h1>";
@@ -139,6 +139,16 @@ class UserController extends Controller
                 echo "<b>Conteúdo:</b> {$post->description}<br><hr>";
             }
         }
+
+        $comments = $user->commentsOnMyPosts()->orderBy('id', 'DESC')->get();
+
+        if (!empty($comments)) {
+            echo "<h1>Comentários dos Artigos</h1>";
+            foreach ($comments as $comment) {
+                echo "Post: #{$comment->post} | User: #{$comment->user} | Comentário: {$comment->content}<br>";
+            }
+        }
+
     }
 
     /**

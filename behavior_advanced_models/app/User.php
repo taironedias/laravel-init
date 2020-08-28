@@ -44,4 +44,12 @@ class User extends Authenticatable
     public function addressDelivery() {
         return $this->hasOne(Address::class, 'user', 'id');
     }
+
+    /**
+     * Método que contém um relacionamento de 1-N
+     * Nesse caso, o usuário pode ter vários artigos cadastrados.
+     */
+    public function posts() {
+        return $this->hasMany(Post::class, 'author', 'id');
+    }
 }

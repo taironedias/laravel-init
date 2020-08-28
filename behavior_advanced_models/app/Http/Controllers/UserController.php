@@ -123,8 +123,22 @@ class UserController extends Controller
         // );
 
         /* Utilizando o with, ele recupera os relacionamento junto com o modelo. Ou seja, nesse caso a variável users possui tanto os registros do usuário quanto do endereço. Não é muito recomendado essa prática a não ser se for utilizado em uma single page. Pois, esse forma demanda de recursos para acesso e consulta ao banco */
-        $users = User::with('addressDelivery')->get();
-        dd($users);
+        // $users = User::with('addressDelivery')->get();
+        // dd($users);
+
+
+
+        /* RELACIONAMENTO 1-N */
+        $posts = $user->posts()->orderBy('id', 'DESC')->take(2)->get();
+
+        if (!empty($posts)) {
+            echo "<h1>Artigos</h1>";
+            foreach ($posts as $post) {
+                echo "<b>#{$post->id} Título:</b> {$post->title} <br>";
+                echo "<b>Subtítulo:</b> {$post->subtitle}<br>";
+                echo "<b>Conteúdo:</b> {$post->description}<br><hr>";
+            }
+        }
     }
 
     /**

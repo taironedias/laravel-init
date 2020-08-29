@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Post;
+use App\Category;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -45,31 +45,20 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        $post = Post::find($id);
-        echo "<h1>Artigo</h1>";
-        echo "<b>#{$post->id} Título:</b> {$post->title} <br>";
-        echo "<b>Subtítulo:</b> {$post->subtitle}<br>";
-        echo "<b>Conteúdo:</b> {$post->description}<br><hr>";
+        $category = Category::find($id);
 
-        $postUser = $post->user()->get()->first();
-        if (!empty($postUser)) {
-            echo "<h1>Dados do Usuário</h1>";
-            echo "Nome: {$postUser->name}<br>";
-            echo "E-mail: {$postUser->email}<br>";
-        }
+        echo "<h1>Categoria: {$category->name}</h1>";
 
-        $postCategories = $post->categories()->get();
-        
-        if (!empty($postCategories)) {
-            echo "Categorias: ";
+        $categoryPosts = $category->posts()->get();
 
-            $str_cateogry = '';
-            foreach ($postCategories as $category) {
-                $str_cateogry .= "{$category->name}, "; 
+        if (!empty($categoryPosts)) {
+            echo "<h1>Artigos da categoria</h1>";
+
+            foreach ($categoryPosts as $post) {
+                echo "<b>#{$post->id} Título:</b> {$post->title} <br>";
+                echo "<b>Subtítulo:</b> {$post->subtitle}<br>";
+                echo "<b>Conteúdo:</b> {$post->description}<br><hr>";
             }
-
-            $str_cateogry = rtrim($str_cateogry, ', ');
-            echo $str_cateogry;
         }
     }
 
